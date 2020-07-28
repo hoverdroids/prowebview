@@ -44,12 +44,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });*/
 
-        webView.loadUrl("http://www.google.com");
+        webView.loadUrl("http://www.google.com/");
         ProWebViewControls controls = findViewById(R.id.controls);
         controls.setProWebView(webView);
 
         et = findViewById(R.id.url);
         findViewById(R.id.load).setOnClickListener(this);
+
+        webView.setProClient(new ProWebView.ProClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(ProWebView webView, String url) {
+                return false;
+            }
+        });
     }
 
     @Override
