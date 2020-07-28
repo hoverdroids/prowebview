@@ -1,34 +1,55 @@
 package vcm.github.webkit.prowebview;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import vcm.github.webkit.proview.ProWebView;
 import vcm.github.webkit.proview.ProWebViewControls;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ProWebView webView;
+    private EditText et;
 
+    @SuppressLint("SetJavaScriptEnabled")
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         webView = findViewById(R.id.webview);
+        webView.setThirdPartyCookiesEnabled(true);
+        webView.setCookiesEnabled(true);
+        webView.setDesktopMode(true);
+        webView.setEnabled(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.setActivity(this);
-        webView.addSpecialScheme("test", new ProWebView.SchemeRequest() {
+
+        /*webView.addSpecialScheme("test", new ProWebView.SchemeRequest() {
             @Override
             public boolean onSchemeRequested(ProWebView view, String url) {
                 view.loadHtml("<h1>Loaded scheme &quot;test&quot;</h1>", url, url, "utf-8");
                 return true;
             }
-        });
+        });*/
+
+        webView.loadUrl("http://www.google.com");
         ProWebViewControls controls = findViewById(R.id.controls);
         controls.setProWebView(webView);
+
+        et = findViewById(R.id.url);
+        findViewById(R.id.load).setOnClickListener(this);
     }
 
     @Override
@@ -66,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 webView.loadHtml("<!DOCTYPE html><html><h1>ProWebView</h1><p>This is a simple HTML code generated programmatically</p><p>See the documentation for more information</p></html>");
                 break;
             case R.id.example:
-                webView.loadUrl("http://www.example.com");
+                webView.loadUrl("https://www.google.com");
                 break;
             case R.id.clear:
                 webView.loadUrl("about:blank");
@@ -121,5 +142,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         webView.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onClick(View v) {
+        String url = et.getText().toString();
+        Log.d("Chris","Loading url:" + url);
+        webView.loadUrl(url);
     }
 }
